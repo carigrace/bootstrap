@@ -17,6 +17,20 @@ from plotnine import *
 import os
 
 
+class BootCI():
+    def __init__():
+        self.stat = mean
+        self.dat = None
+        self.n_boot = 0
+        self.ci_level = .95
+        
+        
+    def bootstrap_sample():
+    
+
+
+
+
 os.chdir('/Users/carinascholtens/Downloads')
 dat = pd.read_csv('2017_Fuel_Economy_Data.csv')
 dat = dat['Combined Mileage (mpg)']
@@ -46,3 +60,14 @@ geom_histogram(fill = 'green')
 )
 
 
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
