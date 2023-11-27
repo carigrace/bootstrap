@@ -18,6 +18,7 @@ import os
 
 
 class BootCI():
+    """docstring"""
     def __init__():
         self.stat = mean
         self.dat = None
@@ -25,8 +26,21 @@ class BootCI():
         self.ci_level = .95
         
         
-    def bootstrap_sample():
-    
+    def bootstrap_sample(n):
+        """docstring"""
+        
+        boot_stat = []
+
+        for i in range(n_boot):
+            boot_sample = dat.sample(n, replace = True)
+        if  stat == 'median':
+            boot_stat.append(float(boot_sample.median()))
+        elif stat == 'mean':
+            boot_stat.append(float(boot_sample.mean()))
+        elif stat == 'stdev':
+            boot_stat.append(float(boot_sample.std()))
+        else:
+            raise TypeError("wrong statistic name")
 
 
 
@@ -64,7 +78,7 @@ geom_histogram(fill = 'green')
     
     
     
-    
+
     
     
     
