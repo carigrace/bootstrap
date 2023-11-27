@@ -16,12 +16,12 @@ import matplotlib.pyplot as plt
 from plotnine import *
 import os
 
-
+#%%
 class BootCI():
     """docstring"""
-    def __init__(self):
-        self.stat = mean
-        self.dat = None
+    def __init__(self, dat = None, stat = None):
+        self.stat = 'mean'
+        self.dat = dat
         self.n_boot = 0
         self.ci_level = .95
         self.boot_stat = []
@@ -30,57 +30,76 @@ class BootCI():
     def bootstrap_sample(self, n):
         """docstring"""
         
-        for i in range(n_boot):
+        for i in range(n):
+            
             boot_sample = dat.sample(n, replace = True)
             if  self.stat == 'median':
                 self.boot_stat.append(float(boot_sample.median()))
             elif self.stat == 'mean':
-                    self.boot_stat.append(float(boot_sample.mean()))
+                self.boot_stat.append(float(boot_sample.mean()))
             elif self.stat == 'stdev':
                 self.boot_stat.append(float(boot_sample.std()))
             else:
                 raise TypeError("wrong statistic name")
+        
+        return boot_stat
+
 
     def boot_clear(self):
         self.boot_stat = []
+        return boot_stat
 
-
-
+    def load_data(self, dat):
+        self.dat = dat
+        n = len(self.dat)
+        return self.dat
+    
+    def change_stat(self, stat):
+        self.stat = stat
+        return self.stat 
+    
+    def change_bootstrap(self, n_boot):
+        self.n_boot = n_boot
+    
+    
+#%%
 os.chdir('/Users/carinascholtens/Downloads')
-dat = pd.read_csv('2017_Fuel_Economy_Data.csv')
-dat = dat['Combined Mileage (mpg)']
-n = len(dat) # bootstrap requires samples to be the number of values in df
-n_boot = 10_000
-stat = 'mean'
+data = pd.read_csv('2017_Fuel_Economy_Data.csv')
+dat = data['Combined Mileage (mpg)']
+#%% testing!!
+f = BootCI()
+f.load_data(dat)
+f.bootstrap_sample(10)
 
-boot_stat = []
+f.boot_clear()  
+#%%
+# n = len(dat) # bootstrap requires samples to be the number of values in df
+# n_boot = 10_000
+# stat = 'mean'
 
-for i in range(n_boot):
-    boot_sample = dat.sample(n, replace = True)
-    if stat == 'median':
-        boot_stat.append(float(boot_sample.median()))
-    elif stat == 'mean':
-        boot_stat.append(float(boot_sample.mean()))
-    elif stat == 'stdev':
-        boot_stat.append(float(boot_sample.std()))
-    else:
-        raise TypeError("wrong statistic name")
+# boot_stat = []
+
+# for i in range(n_boot):
+#     boot_sample = dat.sample(n, replace = True)
+#     if stat == 'median':
+#         boot_stat.append(float(boot_sample.median()))
+#     elif stat == 'mean':
+#         boot_stat.append(float(boot_sample.mean()))
+#     elif stat == 'stdev':
+#         boot_stat.append(float(boot_sample.std()))
+#     else:
+#         raise TypeError("wrong statistic name")
         
 
-boot_df = pd.DataFrame({'x': boot_stat}) #ggplot needs a dataframe
+# boot_df = pd.DataFrame({'x': boot_stat}) #ggplot needs a dataframe
 
-(
-ggplot(boot_df, aes(x = 'x')) + 
-geom_histogram(fill = 'green') 
-)
+# (
+# ggplot(boot_df, aes(x = 'x')) + 
+# geom_histogram(fill = 'green') 
+# )
 
 
 
-dat.bootstrap_sample(10000)
-    
-    
-
-    
     
     
     
