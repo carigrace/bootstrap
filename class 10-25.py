@@ -15,6 +15,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from plotnine import *
 import os
+import numpy as np
 
 #%% class
 class BootCI():
@@ -22,9 +23,10 @@ class BootCI():
     def __init__(self, dat = None, stat = None):
         self.stat = 'mean'
         self.dat = dat
-        self.n_boot = len(self.boot_stat)
         self.ci_level = .95
         self.boot_stat = []
+        self.n_boot = len(self.boot_stat)
+        self.boot_df = pd.DataFrame({'x': self.boot_stat})
         
         
     def bootstrap_sample(self, n):
@@ -32,7 +34,7 @@ class BootCI():
         
         for i in range(n):
             
-            boot_sample = dat.sample(n, replace = True)
+            boot_sample = dat.sample(len(self.dat), replace = True)
             
             if  self.stat == 'median':
                 self.boot_stat.append(float(boot_sample.median()))
@@ -42,29 +44,46 @@ class BootCI():
                 self.boot_stat.append(float(boot_sample.std()))
             else:
                 raise TypeError("wrong statistic name")
-        
+                
+        self.n_boot = len(self.boot_stat)
         return self.boot_stat
-
+    
 
     def boot_clear(self):
+        """docstring"""
         self.boot_stat = []
         return self.boot_stat
 
     def load_data(self, dat):
+        """docstring"""
         self.dat = dat
         self.n = len(self.dat)
         return self.dat
     
     def set_statistic(self, stat):
+        """docstring"""
         self.stat = stat
+        self.boot_stat = []
         return self.stat 
     
-    def change_bootstrap(self, n_boot):
-        self.n_boot = n_boot
+    def plot_bootstrap(self):
+        """docstring"""
+        boot_df = pd.DataFrame({'x': self.boot_stat})
         
+        plot = (
+         ggplot(boot_df, aes(x = 'x')) + 
+         geom_histogram(fill = 'green') 
+        )
+        return plot
+        
+        
+    def percentile(self, level = 95):
+        """docstring"""
+        lb = (100-level)/2 #2.5
+        ub = 100-lb #97.5
+        return np.percentile(self.boot_stat, [lb, ub])
     
-    
-    
+
 #%% data
 os.chdir('/Users/carinascholtens/Downloads')
 data = pd.read_csv('2017_Fuel_Economy_Data.csv')
@@ -72,16 +91,9 @@ dat = data['Combined Mileage (mpg)']
 #%% testing!!
 f = BootCI()
 f.load_data(dat)
-f.bootstrap_sample(10)
-
-f.boot_clear()  
-
-
-f.set_statistic('median')
-
-f.change_bootstrap(10000)
-
-
+f.bootstrap_sample(10000)
+f.plot_bootstrap()
+f.percentile()
 #%% random commented stuff
 # n = len(dat) # bootstrap requires samples to be the number of values in df
 # n_boot = 10_000
