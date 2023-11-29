@@ -60,6 +60,8 @@ class BootCI():
     
     def change_bootstrap(self, n_boot):
         self.n_boot = n_boot
+        
+    
     
     
 #%%
