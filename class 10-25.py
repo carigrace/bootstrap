@@ -10,19 +10,19 @@ Created on Wed Oct 25 15:07:23 2023
 #            20, 20.3, 21.5, 19, 20.4, 22.7, 22.9, 17, 23, 23.8, 22, 21.5,
 #             21.5]})
 
-
+#%% imports
 import pandas as pd
 import matplotlib.pyplot as plt
 from plotnine import *
 import os
 
-#%%
+#%% class
 class BootCI():
     """docstring"""
     def __init__(self, dat = None, stat = None):
         self.stat = 'mean'
         self.dat = dat
-        self.n_boot = 0
+        self.n_boot = len(self.boot_stat)
         self.ci_level = .95
         self.boot_stat = []
         
@@ -33,6 +33,7 @@ class BootCI():
         for i in range(n):
             
             boot_sample = dat.sample(n, replace = True)
+            
             if  self.stat == 'median':
                 self.boot_stat.append(float(boot_sample.median()))
             elif self.stat == 'mean':
@@ -42,19 +43,19 @@ class BootCI():
             else:
                 raise TypeError("wrong statistic name")
         
-        return boot_stat
+        return self.boot_stat
 
 
     def boot_clear(self):
         self.boot_stat = []
-        return boot_stat
+        return self.boot_stat
 
     def load_data(self, dat):
         self.dat = dat
-        n = len(self.dat)
+        self.n = len(self.dat)
         return self.dat
     
-    def change_stat(self, stat):
+    def set_statistic(self, stat):
         self.stat = stat
         return self.stat 
     
@@ -64,7 +65,7 @@ class BootCI():
     
     
     
-#%%
+#%% data
 os.chdir('/Users/carinascholtens/Downloads')
 data = pd.read_csv('2017_Fuel_Economy_Data.csv')
 dat = data['Combined Mileage (mpg)']
@@ -74,7 +75,14 @@ f.load_data(dat)
 f.bootstrap_sample(10)
 
 f.boot_clear()  
-#%%
+
+
+f.set_statistic('median')
+
+f.change_bootstrap(10000)
+
+
+#%% random commented stuff
 # n = len(dat) # bootstrap requires samples to be the number of values in df
 # n_boot = 10_000
 # stat = 'mean'
