@@ -79,8 +79,8 @@ class BootCI():
         
     def percentile(self, level = 95):
         """docstring"""
-        lb = (100-level)/2 #2.5
-        ub = 100-lb #97.5
+        lb = (100-level)/2 
+        ub = 100-lb 
         return np.percentile(self.boot_stat, [lb, ub])
     
 
