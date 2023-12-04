@@ -131,5 +131,5 @@ f.plot_bootstrap()
 f.percentile()
 
 f.boot_clear()
-  
+
     
